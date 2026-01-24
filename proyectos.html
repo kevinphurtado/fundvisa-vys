@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proyectos | FUNDVISA</title>
+  <link rel="icon" href="img/ico.png" type="image/x-icon">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/fundvisa.css">
+
+  <style>
+    /* Estilos Específicos para Proyectos Modernos */
+    :root {
+      --card-radius: 16px;
+      --transition-speed: 0.3s;
+    }
+
+    .page-hero {
+      background: linear-gradient(135deg, var(--color-azul, #0d6efd) 0%, #0a4b9c 100%);
+      color: white;
+      padding: 80px 0;
+      margin-bottom: 60px;
+      border-radius: 0 0 50px 50px; /* Curva moderna abajo */
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .project-card {
+      border: none;
+      border-radius: var(--card-radius);
+      background: #fff;
+      transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+    }
+
+    .project-cover-wrapper {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%; /* Aspect Ratio 16:9 */
+      overflow: hidden;
+      background-color: #f0f2f5;
+    }
+
+    .project-cover-wrapper img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .project-card:hover .project-cover-wrapper img {
+      transform: scale(1.05);
+    }
+
+    .badge-featured {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: rgba(255, 255, 255, 0.95);
+      color: var(--color-verde, #198754);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.75rem;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      z-index: 2;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .project-body {
+      padding: 1.5rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-meta {
+      display: flex;
+      gap: 15px;
+      font-size: 0.85rem;
+      color: #6c757d;
+      margin-bottom: 12px;
+    }
+
+    .project-meta i {
+      color: var(--color-verde, #198754);
+      margin-right: 5px;
+    }
+
+    .project-title {
+      font-weight: 700;
+      font-size: 1.25rem;
+      margin-bottom: 10px;
+      color: #2c3e50;
+      line-height: 1.4;
+    }
+
+    .project-desc {
+      color: #555;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      flex-grow: 1; /* Empuja el footer hacia abajo */
+    }
+
+    .project-impact-box {
+      background-color: rgba(25, 135, 84, 0.08); /* Verde muy suave */
+      border-left: 3px solid var(--color-verde, #198754);
+      padding: 10px 15px;
+      border-radius: 0 8px 8px 0;
+      margin-top: auto; /* Se pega al fondo si hay espacio */
+    }
+
+    .project-impact-box small {
+      display: block;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.7rem;
+      color: var(--color-verde, #198754);
+      margin-bottom: 2px;
+    }
+
+    .project-impact-box span {
+      font-size: 0.9rem;
+      color: #333;
+      font-weight: 500;
+    }
+
+    /* --- Estilos para la Vista Detalle (Estilo Blog) --- */
+    #fvProjectDetail {
+      background: #fff;
+      border-radius: var(--card-radius);
+      overflow: hidden;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .detail-hero {
+      height: 400px; /* Imagen grande tipo portada */
+      width: 100%;
+      object-fit: cover;
+      border-radius: var(--card-radius) var(--card-radius) 0 0;
+    }
+
+    .detail-content-wrapper {
+      max-width: 800px; /* Ancho de lectura cómodo */
+      margin: -60px auto 0; /* Efecto solapado sobre la imagen */
+      position: relative;
+      background: #fff;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      margin-bottom: 20px;
+      color: #6c757d;
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+
+    .btn-back:hover {
+      color: var(--color-verde, #198754);
+    }
+
+    .detail-body {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: #444;
+      margin-top: 30px;
+      white-space: pre-line; /* Respeta los saltos de línea de la base de datos */
+    }
+
+    /* Hacemos que la card del grid parezca clickeable */
+    .project-card {
+      cursor: pointer;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      .detail-hero { height: 250px; }
+      .detail-content-wrapper { padding: 20px; margin-top: -30px; width: 90%; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">
+          <img src="img/logo.png" alt="Logo FUNDVISA" height="40">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+            <li class="nav-item"><a class="nav-link" href="quienes-somos.html">Quiénes Somos</a></li>
+            <li class="nav-item"><a class="nav-link active" href="proyectos.html">Proyectos</a></li>
+            <li class="nav-item"><a class="nav-link" href="galeria.html">Galería</a></li>
+            <li class="nav-item"><a class="nav-link" href="inscripciones.html">Inscripciones</a></li>
+            <li class="nav-item"><a class="nav-link" href="contacto.html">Contacto</a></li>
+          </ul>
+          <a href="donaciones.html" class="btn btn-verde ms-lg-3 rounded-pill px-4">Donar</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container text-center">
+        <h1>Nuestros Proyectos</h1>
+        <p class="lead">Descubre cómo estamos transformando vidas a través del deporte, la salud y el compromiso comunitario en el corazón del Chocó.</p>
+      </div>
+    </section>
+    <style>
+      /* Espaciado de letras para subtítulos */
+      .letter-spacing-2 {
+        letter-spacing: 2px;
+      }
+
+      /* Efecto Hover en las tarjetas de estadísticas */
+      .card-hover-effect {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+      .card-hover-effect:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+      }
+
+      /* Animación suave para el texto de carga */
+      .animate-pulse {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: .5; }
+      }
+    </style>
+
+    <section class="main-content pb-5">
+      <div class="container">
+
+        <div id="fvProjectsLoader" class="text-center py-5 d-none">
+          <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+            <span class="visually-hidden">Cargando...</span>
+          </div>
+          <p class="mt-3 text-muted">Cargando iniciativas...</p>
+        </div>
+
+        <div id="fvProjectsEmpty" class="alert alert-light text-center shadow-sm py-5 d-none border-0">
+            <i class="fas fa-folder-open fa-3x text-muted mb-3"></i>
+            <h4>No hay proyectos activos por el momento.</h4>
+            <p class="text-muted">Estamos trabajando en nuevas iniciativas. ¡Vuelve pronto!</p>
+        </div>
+
+        <div class="row g-4" id="fvProjectsGrid">
+            </div>
+            <div class="row g-4" id="fvProjectsGrid"></div>
+
+        <div id="fvProjectDetail" class="d-none">
+            <button class="btn btn-link btn-back ps-0" id="btnBackToGrid">
+                <i class="fas fa-arrow-left me-2"></i> Volver a Proyectos
+            </button>
+            
+            <img id="detailCover" src="" class="detail-hero" alt="Portada">
+            
+            <div class="detail-content-wrapper">
+                <div class="text-center mb-4">
+                    <span id="detailBadge" class="badge bg-success mb-2 d-none">Destacado</span>
+                    <h1 id="detailTitle" class="display-5 fw-bold text-dark">Título del Proyecto</h1>
+                    <div class="text-muted mt-2" id="detailMeta">
+                        </div>
+                </div>
+                
+                <hr class="opacity-25 my-4">
+                
+                <div id="detailBody" class="detail-body">
+                    </div>
+
+                <div id="detailImpact" class="mt-5 p-4 bg-light rounded border-start border-4 border-success">
+                    <h5 class="text-success fw-bold"><i class="fas fa-chart-line me-2"></i>Impacto Logrado</h5>
+                    <p class="mb-0 fs-5" id="detailImpactText">...</p>
+                </div>
+            </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer pt-5 pb-3" style="background: linear-gradient(to bottom, #1a1a1a, #000);">
+        <div class="container">
+            <div class="row gx-5 justify-content-between">
+                
+                <div class="col-lg-4 mb-5 mb-lg-0">
+                    <a href="#" class="d-inline-block mb-4">
+                        <img src="img/logo.png" alt="Logo FUNDVISA" class="img-fluid footer-logo-white" style="max-height: 70px;">
+                    </a>
+                    <p class="text-white-50 mb-0" style="line-height: 1.8; text-align: justify;">
+                        Transformando vidas a través del deporte y el bienestar. Promovemos hábitos saludables para construir una comunidad más activa, unida y saludable en el corazón del Chocó.
+                    </p>
+                </div>
+
+                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0 offset-lg-1">
+                    <h5 class="text-white fw-bold mb-4 position-relative d-inline-block">
+                        Enlaces Rápidos
+                        <span style="position: absolute; bottom: -8px; left: 0; width: 40px; height: 3px; background-color: var(--color-verde, #28a745); border-radius: 2px;"></span>
+                    </h5>
+                    <ul class="list-unstyled footer-links">
+                        <li class="mb-2"><a href="#inicio" class="text-white-50 text-decoration-none transition-link"><i class="fas fa-chevron-right me-2 small text-success"></i>Inicio</a></li>
+                        <li class="mb-2"><a href="quienes-somos.html" class="text-white-50 text-decoration-none transition-link"><i class="fas fa-chevron-right me-2 small text-success"></i>Quiénes Somos</a></li>
+                        <li class="mb-2"><a href="inscripciones.html" class="text-white-50 text-decoration-none transition-link"><i class="fas fa-chevron-right me-2 small text-success"></i>Servicios</a></li>
+                        <li class="mb-2"><a href="proyectos.html" class="text-white-50 text-decoration-none transition-link"><i class="fas fa-chevron-right me-2 small text-success"></i>Proyectos</a></li>
+                        <li class="mb-2"><a href="galeria.html" class="text-white-50 text-decoration-none transition-link"><i class="fas fa-chevron-right me-2 small text-success"></i>Galería</a></li>
+                        <li><a href="contacto.html" class="text-white-50 text-decoration-none transition-link"><i class="fas fa-chevron-right me-2 small text-success"></i>Contacto</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    <h5 class="text-white fw-bold mb-4 position-relative d-inline-block">
+                        Conectemos
+                        <span style="position: absolute; bottom: -8px; left: 0; width: 40px; height: 3px; background-color: var(--color-azul, #0056b3); border-radius: 2px;"></span>
+                    </h5>
+                    
+                    <ul class="list-unstyled text-white-50 mb-4">
+                        <li class="mb-3 d-flex align-items-start">
+                            <i class="fas fa-map-marker-alt mt-1 me-3 text-white"></i>
+                            <span>Cra 4 # 23 - 63 B/ Yesca Grande,<br>Quibdó, Chocó</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="fas fa-envelope me-3 text-white"></i>
+                            <span>fundaciondeportivavidaysalud@gmail.com</span>
+                        </li>
+                        <li class="d-flex align-items-center">
+                            <i class="fas fa-phone-alt me-3 text-white"></i>
+                            <span>314 763 6814</span>
+                        </li>
+                    </ul>
+
+                    <h6 class="text-white small text-uppercase fw-bold mb-3 op-75">Síguenos en redes</h6>
+                    
+                    <div class="social-icons-container">
+                        <a href="https://instagram.com/fun_dvisa" target="_blank" class="social-icon"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.tiktok.com/@fun_dvisa" target="_blank" class="social-icon"><i class="fab fa-tiktok"></i></a>
+                        <a href="https://www.youtube.com/@fun_dvisa" target="_blank" class="social-icon"><i class="fab fa-youtube"></i></a>
+                        <a href="https://facebook.com/fundvisa" target="_blank" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="my-5" style="border-color: rgba(255,255,255,0.15);">
+
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    <p class="mb-0 text-white-50 small">
+                        &copy; 2025 <strong class="text-white">FUNDVISA</strong>. Todos los derechos reservados.
+                    </p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <ul class="list-inline mb-0 small">
+                        <li class="list-inline-item mx-2">
+                            <a href="#" class="text-white-50 text-decoration-none hover-white" data-bs-toggle="modal" data-bs-target="#politicaPrivacidad">Privacidad</a>
+                        </li>
+                        <li class="list-inline-item text-white-50">•</li>
+                        <li class="list-inline-item mx-2">
+                            <a href="#" class="text-white-50 text-decoration-none hover-white" data-bs-toggle="modal" data-bs-target="#politicaCookies">Cookies</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-12 text-center">
+                    <p class="small text-white-50 mb-0 opacity-75">
+                        Desarrollado con <i class="fas fa-heart text-danger mx-1"></i> por 
+                        <a href="https://chococreativo.com.co/proyectos" target="_blank" class="text-white text-decoration-none fw-bold hover-lift">
+                            Choco Creativo
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script type="module" src="js/public-projects.js"></script>
+</body>
+</html>

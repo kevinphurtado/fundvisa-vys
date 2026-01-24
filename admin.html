@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FUNDVISA | Admin</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/fundvisa.css">
+
+<style id="admin-polish">
+  /* Admin polish (sin cambiar tu paleta) */
+  body.admin-body{
+    background:
+      radial-gradient(900px 420px at 15% 0%, rgba(0,91,154,.10), transparent 60%),
+      radial-gradient(700px 380px at 85% 10%, rgba(59,181,74,.12), transparent 60%),
+      var(--color-fondo-claro);
+  }
+  .admin-shell .page-hero{
+    background: var(--degradado-azul-verde);
+    padding: 56px 0 40px;
+  }
+  .admin-shell .page-hero h1{ letter-spacing:-.3px; }
+  .admin-shell .page-hero .lead{ opacity:.92; }
+
+  .fv-admin-card{
+    border-radius: 22px;
+    border: 1px solid rgba(0,0,0,.06);
+    box-shadow: 0 16px 50px rgba(0,0,0,.08);
+  }
+
+  /* Tabs más premium */
+  .fv-admin-tabs{
+    background: rgba(255,255,255,.85);
+    border: 1px solid rgba(0,0,0,.06);
+    border-radius: 999px;
+    padding: 6px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.06);
+    position: sticky;
+    top: 84px; /* debajo del navbar */
+    z-index: 20;
+    backdrop-filter: blur(10px);
+  }
+  .fv-admin-tabs .nav-link{
+    border-radius: 999px;
+    font-weight: 700;
+    color: #1f2937;
+    transition: var(--transicion-rapida);
+  }
+  .fv-admin-tabs .nav-link:hover{ background: rgba(0,0,0,.04); }
+  .fv-admin-tabs .nav-link.active{
+    color: #fff;
+    background: var(--degradado-verde-azul);
+    box-shadow: 0 10px 20px rgba(0,0,0,.12);
+  }
+
+  /* Tab content spacing */
+  .tab-pane .fv-admin-card{ margin-bottom: 18px; }
+
+  /* Inputs: enfoque más notorio */
+  .fv-admin-card .form-control:focus,
+  .fv-admin-card .form-select:focus{
+    border-color: rgba(0,91,154,.55);
+    box-shadow: 0 0 0 .22rem rgba(0,91,154,.18);
+  }
+
+  /* Tablas */
+  .fv-admin-card .table thead th{
+    position: sticky;
+    top: 0;
+    background: #fff;
+    z-index: 2;
+  }
+  .fv-admin-card .table tbody tr:hover{
+    background: rgba(59,181,74,.05);
+  }
+
+  /* Botones con mejor tacto */
+  .fv-admin-card .btn{
+    border-radius: 14px;
+  }
+  .btn-verde{
+    box-shadow: 0 12px 24px rgba(59,181,74,.18);
+  }
+  .btn-azul{
+    box-shadow: 0 12px 24px rgba(0,91,154,.18);
+  }
+
+  /* Badges más legibles */
+  .badge{
+    border-radius: 999px;
+    padding: .45rem .65rem;
+    font-weight: 800;
+    letter-spacing: .2px;
+  }
+
+  /* Mejor scroll en listas largas dentro de cards */
+  .fv-admin-card .table-responsive{
+    border-radius: 18px;
+    overflow: auto;
+  }
+
+  @media (max-width: 991px){
+    .fv-admin-tabs{ top: 70px; }
+  }
+      /* Animación suave */
+      .fade-in { animation: fadeIn 0.5s ease-in-out; }
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+      
+      /* Ajustes para inputs flotantes o limpios */
+      .form-control:focus, .form-select:focus {
+        box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.15); /* Color verde suave */
+        border-color: #198754;
+      }
+      
+      /* Tabs personalizadas */
+      .nav-pills .nav-link { color: #6c757d; font-weight: 500; }
+      .nav-pills .nav-link.active { background-color: #198754; color: white; box-shadow: 0 4px 6px rgba(25, 135, 84, 0.3); }
+      
+      /* Botón Verde Personalizado */
+      .btn-verde { background-color: #198754; color: white; border: none; }
+      .btn-verde:hover { background-color: #146c43; color: white; }
+</style>
+
+</head>
+
+<body class="admin-body">
+  <!-- Navbar -->
+  <header>
+  <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm py-3">
+    <div class="container">
+      
+    <a class="navbar-brand d-flex align-items-center gap-2 group-hover" href="index.html">
+      <div class="bg-success bg-gradient text-white rounded-3 d-flex align-items-center justify-content-center shadow-sm" style="width: 40px; height: 40px;">
+        <i class="fas fa-user-shield"></i>
+      </div>
+      
+      <div class="d-flex flex-column justify-content-center lh-1">
+        <span class="fw-black text-dark fs-5" style="font-weight: 800; letter-spacing: -0.5px;">
+          FUND<span class="text-success">VISA</span>
+        </span>
+        <span class="text-muted text-uppercase fw-bold" style="font-size: 0.65rem; letter-spacing: 2px;">
+          Panel Administrativo
+        </span>
+      </div>
+    </a>
+
+      <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto align-items-center">
+          
+          <li class="nav-item ms-lg-3 mt-3 mt-lg-0">
+            <button id="btnLogout" class="btn btn-outline-danger btn-sm rounded-pill px-4 d-none fw-semibold transition-btn" type="button">
+              <i class="fas fa-power-off me-2"></i>Cerrar Sesión
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div style="height: 90px;"></div>
+</header>
+
+<style>
+  .transition-btn {
+    transition: all 0.3s ease;
+  }
+  .transition-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(220, 53, 69, 0.2);
+  }
+</style>
+
+  <main class="admin-shell">
+   <section class="main-content py-5 bg-light" style="min-height: 100vh;">
+      <div class="container">
+
+        <div id="loginView" class="row justify-content-center align-items-center" style="min-height: 80vh;">
+          <div class="col-12 col-md-8 col-lg-5">
+            <div class="fv-admin-card card border-0 shadow-lg rounded-4 overflow-hidden">
+              <div class="card-header bg-verde text-white text-center py-4 border-0" style="background: linear-gradient(135deg, #198754, #146c43);">
+                <h3 class="mb-0 fw-bold"><i class="fas fa-shield-halved me-2"></i>Admin Portal</h3>
+                <p class="small mb-0 opacity-75">Acceso seguro al sistema</p>
+              </div>
+              <div class="card-body p-4 p-md-5">
+                <p class="text-muted text-center mb-4">Ingresa tus credenciales de administrador.</p>
+
+                <form id="loginForm" class="row g-3">
+                  <div class="col-12">
+                    <label class="form-label fw-semibold text-secondary">Correo Electrónico</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light border-end-0"><i class="fas fa-envelope text-muted"></i></span>
+                      <input class="form-control border-start-0 ps-0" type="email" id="loginEmail" required maxlength="120" autocomplete="username" placeholder="admin@ejemplo.com" />
+                    </div>
+                  </div>
+                  <div class="col-12">
+                    <label class="form-label fw-semibold text-secondary">Contraseña</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light border-end-0"><i class="fas fa-lock text-muted"></i></span>
+                      <input class="form-control border-start-0 ps-0" type="password" id="loginPass" required minlength="6" maxlength="72" autocomplete="current-password" placeholder="******" />
+                    </div>
+                  </div>
+
+                  <div class="col-12 mt-4">
+                    <button class="btn btn-verde w-100 py-2 fw-bold shadow-sm" type="submit">
+                      <i class="fas fa-right-to-bracket me-2"></i>Ingresar al Sistema
+                    </button>
+                  </div>
+                  <div class="col-12 text-center">
+                    <button class="btn btn-link text-secondary text-decoration-none btn-sm" type="button" id="btnCreateAdmin">
+                      <i class="fas fa-user-plus me-1"></i>Crear usuario (Solo Allowlist)
+                    </button>
+                  </div>
+                  <div class="col-12">
+                    <div id="loginHint" class="alert alert-warning d-none mb-0 small shadow-sm border-0"></div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="appView" class="d-none fade-in">
+          
+          <div class="fv-admin-topbar d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 bg-white p-4 rounded-4 shadow-sm border-0">
+            <div class="mb-3 mb-md-0">
+              <h2 class="h3 fw-bold text-dark mb-1">Panel de Control</h2>
+              <div class="text-muted small">
+                <i class="fas fa-circle-user me-1 text-success"></i> Conectado como: <span id="userEmail" class="fw-medium text-dark">-</span>
+              </div>
+            </div>
+            <div class="d-flex gap-2">
+              <button id="btnRefresh" class="btn btn-light text-primary border shadow-sm" type="button">
+                <i class="fas fa-rotate me-2"></i>Actualizar
+              </button>
+              <button id="btnExportAll" class="btn btn-success shadow-sm text-white" type="button">
+                <i class="fas fa-file-excel me-2"></i>Exportar Todo
+              </button>
+            </div>
+          </div>
+
+          <ul class="nav nav-pills fv-admin-tabs mb-4 gap-2 p-1 bg-white rounded-pill shadow-sm d-inline-flex" id="adminTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active rounded-pill px-4" data-bs-toggle="pill" data-bs-target="#tabGallery" type="button" role="tab">
+                <i class="fas fa-images me-2"></i>Galería
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link rounded-pill px-4" data-bs-toggle="pill" data-bs-target="#tabContacts" type="button" role="tab">
+                <i class="fas fa-envelope me-2"></i>Mensajes
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link rounded-pill px-4" data-bs-toggle="pill" data-bs-target="#tabForms" type="button" role="tab">
+                <i class="fas fa-list-check me-2"></i>Formularios
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link rounded-pill px-4" data-bs-toggle="pill" data-bs-target="#tabSubs" type="button" role="tab">
+                <i class="fas fa-users me-2"></i>Inscripciones
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link rounded-pill px-4" data-bs-toggle="pill" data-bs-target="#tabProjects" type="button" role="tab">
+                <i class="fas fa-briefcase me-2"></i>Proyectos
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link rounded-pill px-4" data-bs-toggle="pill" data-bs-target="#tabConfig" type="button" role="tab">
+                <i class="fas fa-gear me-2"></i>Config
+              </button>
+            </li>
+          </ul>
+
+          <div class="tab-content">
+            
+            <div class="tab-pane fade show active" id="tabGallery" role="tabpanel">
+              <div class="row g-4">
+                <div class="col-lg-4">
+                  <div class="fv-admin-card card border-0 shadow-sm rounded-4 h-100">
+                    <div class="card-header bg-white border-0 pt-4 px-4 pb-0">
+                      <h5 class="mb-0 fw-bold text-primary"><i class="fas fa-images me-2"></i>Galería por Álbumes</h5>
+                    </div>
+                    <div class="card-body p-4">
+                                            <ul class="nav nav-pills bg-light rounded-4 p-1 mb-3" role="tablist">
+                        <li class="nav-item" role="presentation">
+                          <button class="nav-link active rounded-4 fw-bold" data-bs-toggle="pill" data-bs-target="#gaTabAlbum" type="button" role="tab">
+                            <i class="fas fa-folder-plus me-2"></i>Nuevo Álbum
+                          </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                          <button class="nav-link rounded-4 fw-bold" data-bs-toggle="pill" data-bs-target="#gaTabPhotos" type="button" role="tab">
+                            <i class="fas fa-images me-2"></i>Subir Fotos
+                          </button>
+                        </li>
+                      </ul>
+
+                      <div class="tab-content">
+                        <!-- Crear Álbum -->
+                        <div class="tab-pane fade show active" id="gaTabAlbum" role="tabpanel">
+                          <form id="albumForm" class="row g-3">
+                            <div class="col-12">
+                              <label class="form-label small text-uppercase fw-bold text-secondary">Nombre del Álbum</label>
+                              <input class="form-control bg-light border-0" id="aTitle" maxlength="120" required placeholder="Ej: Torneo 1" />
+                            </div>
+
+                            <div class="col-12">
+                              <label class="form-label small text-uppercase fw-bold text-secondary">Descripción (opcional)</label>
+                              <textarea class="form-control bg-light border-0" id="aDesc" rows="3" maxlength="500" placeholder="Ej: Fotos oficiales del torneo, sede, fecha…"></textarea>
+                            </div>
+
+                            <div class="col-6">
+                              <label class="form-label small text-uppercase fw-bold text-secondary">Orden</label>
+                              <input class="form-control bg-light border-0" id="aOrder" type="number" min="1" max="999" value="1" />
+                            </div>
+
+                            <div class="col-6 d-flex align-items-center pt-4">
+                              <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="aActive" checked>
+                                <label class="form-check-label" for="aActive">Visible</label>
+                              </div>
+                            </div>
+
+                            <div class="col-12">
+                              <label class="form-label small text-uppercase fw-bold text-secondary">Portada (opcional)</label>
+                              <input class="form-control" id="aCoverFile" type="file" accept="image/*" />
+                              <div class="form-text text-muted small">Si no eliges portada, se usará la primera foto subida al álbum.</div>
+                            </div>
+
+                            <div class="col-12">
+                              <label class="form-label small text-uppercase fw-bold text-secondary">O URL de portada</label>
+                              <input class="form-control bg-light border-0" id="aCoverUrl" maxlength="500" placeholder="https://..." />
+                            </div>
+
+                            <div class="col-12 d-flex gap-2 mt-2">
+                              <button class="btn btn-verde w-100 shadow-sm" type="submit">Crear Álbum</button>
+                              <button class="btn btn-light border" type="button" id="btnClearAlbumForm"><i class="fas fa-eraser"></i></button>
+                            </div>
+
+                            <div class="col-12">
+                              <div id="aProgress" class="progress d-none" style="height: 5px;">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
+                              </div>
+                            </div>
+                          </form>
+                        </div>
+
+                        <!-- Subir múltiples fotos -->
+                        <div class="tab-pane fade" id="gaTabPhotos" role="tabpanel">
+                          <form id="albumPhotosForm" class="row g-3">
+                            <div class="col-12">
+                              <label class="form-label small text-uppercase fw-bold text-secondary">Álbum</label>
+                              <select class="form-select bg-light border-0" id="apAlbumId" required></select>
+                            </div>
+
+                            <div class="col-12">
+                              <label class="form-label small text-uppercase fw-bold text-secondary">Descripción (opcional)</label>
+                              <input class="form-control bg-light border-0" id="apCaption" maxlength="140" placeholder="Ej: Partido final / Premiación" />
+                            </div>
+
+                            <div class="col-6">
+                              <label class="form-label small text-uppercase fw-bold text-secondary">Orden inicial</label>
+                              <input class="form-control bg-light border-0" id="apOrderStart" type="number" min="1" max="999" value="1" />
+                            </div>
+
+                            <div class="col-6 d-flex align-items-center pt-4">
+                              <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="apActive" checked>
+                                <label class="form-check-label" for="apActive">Visible</label>
+                              </div>
+                            </div>
+
+                            <div class="col-12">
+                              <label class="form-label small text-uppercase fw-bold text-secondary">Archivos (múltiples)</label>
+                              <input class="form-control" id="apFiles" type="file" accept="image/*" multiple />
+                              <div class="form-text text-muted small">Máx 4 MB por imagen (PNG/JPG/WEBP).</div>
+                            </div>
+
+                            <div class="col-12">
+                              <label class="form-label small text-uppercase fw-bold text-secondary">O URLs (una por línea)</label>
+                              <textarea class="form-control bg-light border-0" id="apUrls" rows="4" maxlength="4000" placeholder="https://...
+https://..."></textarea>
+                            </div>
+
+                            <div class="col-12 d-flex gap-2 mt-2">
+                              <button class="btn btn-verde w-100 shadow-sm" type="submit">Subir al Álbum</button>
+                              <button class="btn btn-light border" type="button" id="btnClearAlbumPhotosForm"><i class="fas fa-eraser"></i></button>
+                              <button class="btn btn-outline-danger border-0 shadow-sm px-3" type="button" id="btnCleanInvalidPhotos" title="Eliminar fotos inválidas del álbum"><i class="fas fa-trash"></i></button>
+                            </div>
+
+                            <div class="col-12">
+                              <div id="apProgress" class="progress d-none" style="height: 5px;">
+                                <div class="progress-bar bg-success" role="progressbar" style="width: 0%"></div>
+                              </div>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-8">
+                  <div class="fv-admin-card card border-0 shadow-sm rounded-4 h-100">
+                    <div class="card-header bg-white border-bottom pt-4 px-4 pb-3 d-flex justify-content-between align-items-center">
+                      <h5 class="mb-0 fw-bold"><i class="fas fa-folder-open me-2 text-secondary"></i>Álbumes</h5>
+                      <button id="btnExportGallery" class="btn btn-sm btn-outline-success rounded-pill px-3" type="button">
+                        <i class="fas fa-file-excel me-1"></i> Excel
+                      </button>
+                    </div>
+                    <div class="card-body p-0">
+                      <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0 text-nowrap">
+                          <thead class="table-light text-secondary small text-uppercase">
+                            <tr>
+                              <th class="ps-4">Portada</th>
+                              <th>Álbum</th>
+                              <th>Orden</th>
+                              <th>Estado</th>
+                              <th>Fotos</th>
+                              <th class="text-end pe-4">Acciones</th>
+                            </tr>
+                          </thead>
+                          <tbody id="galleryTbody" class="border-top-0"></tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <div class="card-footer bg-white border-0 py-3 px-4 d-flex justify-content-between align-items-center">
+                      <small class="text-muted fw-bold" id="galleryCount">Cargando...</small>
+                      <button id="btnMoreGallery" class="btn btn-link text-decoration-none text-primary fw-bold" type="button">Ver más álbumes <i class="fas fa-chevron-down ms-1"></i></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tab-pane fade" id="tabContacts" role="tabpanel">
+              <div class="fv-admin-card card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-white border-bottom pt-4 px-4 pb-3">
+                  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <h5 class="mb-0 fw-bold"><i class="fas fa-inbox me-2 text-primary"></i>Bandeja de Entrada</h5>
+                    <div class="d-flex gap-2">
+                      <select id="cStatus" class="form-select form-select-sm bg-light border-0 fw-medium" style="width: auto;">
+                        <option value="new">● Nuevos</option>
+                        <option value="read">Leídos</option>
+                        <option value="archived">Archivados</option>
+                        <option value="all">Todos</option>
+                      </select>
+                      <button id="btnExportContacts" class="btn btn-sm btn-outline-success rounded-pill" type="button">
+                        <i class="fas fa-download"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body p-0">
+                  <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                      <thead class="table-light text-secondary small text-uppercase">
+                        <tr>
+                          <th class="ps-4">Fecha</th>
+                          <th>Nombre</th>
+                          <th>Correo</th>
+                          <th>Estado</th>
+                          <th class="text-end pe-4">Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody id="contactsTbody"></tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="card-footer bg-white border-0 py-3 px-4 d-flex justify-content-between">
+                  <small class="text-muted" id="contactsCount">-</small>
+                  <button id="btnMoreContacts" class="btn btn-sm btn-outline-primary rounded-pill" type="button">Cargar siguientes</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="tab-pane fade" id="tabForms" role="tabpanel">
+              <div class="d-flex justify-content-end mb-3">
+                <div class="btn-group shadow-sm" role="group" aria-label="Vista de formularios">
+                  <button id="formsViewCreate" type="button" class="btn btn-outline-primary active">
+                    <i class="fas fa-plus me-2"></i>Crear Evento
+                  </button>
+                  <button id="formsViewManage" type="button" class="btn btn-outline-primary">
+                    <i class="fas fa-list-check me-2"></i>Formularios Existentes
+                  </button>
+                </div>
+              </div>
+              <div class="row g-4">
+                <div class="col-lg-4" id="formsLeftCol">
+                  <div class="fv-admin-card card border-0 shadow-sm rounded-4 mb-4" id="formsCreateCard">
+                    <div class="card-header bg-white border-0 pt-4 px-4">
+                      <h5 class="mb-0 fw-bold text-primary">Crear Evento</h5>
+                    </div>
+                    <div class="card-body p-4">
+                      <form id="formCreate" class="row g-3">
+                        <div class="col-12">
+                          <label class="form-label small text-uppercase fw-bold text-secondary">Título</label>
+                          <input class="form-control bg-light border-0" id="fTitle" maxlength="120" required placeholder="Ej: Torneo 2026" />
+                        </div>
+                        <div class="col-12">
+                          <label class="form-label small text-uppercase fw-bold text-secondary">Descripción</label>
+                          <textarea class="form-control bg-light border-0" id="fDesc" rows="3" maxlength="500"></textarea>
+                        </div>
+                        <div class="col-12">
+                          <div class="form-check form-switch p-3 bg-light rounded-3">
+                            <input class="form-check-input" type="checkbox" id="fActive">
+                            <label class="form-check-label fw-medium" for="fActive">Publicar inmediatamente</label>
+                          </div>
+                        </div>
+                        <div class="col-12">
+                          <button class="btn btn-verde w-100 shadow-sm" type="submit">Crear Formulario</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+
+                  <div class="fv-admin-card card border-0 shadow-sm rounded-4" id="formsEditorCard">
+                    <div class="card-header bg-white border-bottom pt-4 px-4 pb-3">
+                      <h5 class="mb-0 fw-bold"><i class="fas fa-pen-ruler me-2 text-secondary"></i>Editor de Preguntas</h5>
+                    </div>
+                    <div class="card-body p-4">
+                      <div id="formSelectedEmpty" class="text-center text-muted py-5">
+                        <i class="fas fa-arrow-right fa-2x mb-3 opacity-25"></i>
+                        <p class="mb-0">Selecciona un formulario de la lista para editar sus campos.</p>
+                      </div>
+
+                      <div id="formEditor" class="d-none">
+                        <div class="bg-light p-3 rounded-3 mb-3">
+                          <div class="fw-bold text-dark" id="selFormTitle">Título</div>
+                          <div class="text-muted small" id="selFormMeta">ID: ...</div>
+                        </div>
+                        
+                        <div class="d-flex gap-2 mb-3">
+                          <button id="btnSetActiveForm" class="btn btn-sm btn-outline-success flex-fill" type="button"><i class="fas fa-check me-1"></i> Activar</button>
+                          <button id="btnDeleteForm" class="btn btn-sm btn-outline-danger flex-fill" type="button"><i class="fas fa-trash me-1"></i> Eliminar</button>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                          <span class="small fw-bold text-secondary text-uppercase">Campos</span>
+                          <button id="btnAddField" class="btn btn-xs btn-primary rounded-circle" type="button" style="width:24px; height:24px; padding:0;"><i class="fas fa-plus small"></i></button>
+                        </div>
+
+                        <div class="table-responsive border rounded-3 mb-3">
+                          <table class="table table-sm align-middle mb-0">
+                            <tbody id="fieldsTbody"></tbody>
+                          </table>
+                        </div>
+
+                        <button id="btnSaveFields" class="btn btn-dark w-100" type="button">
+                          <i class="fas fa-save me-2"></i>Guardar Cambios
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-8" id="formsRightCol">
+                  <div class="fv-admin-card card border-0 shadow-sm rounded-4 h-100" id="formsListCard">
+                    <div class="card-header bg-white border-bottom pt-4 px-4 pb-3 d-flex justify-content-between align-items-center">
+                      <h5 class="mb-0 fw-bold"><i class="fas fa-list me-2 text-secondary"></i>Formularios Existentes</h5>
+                      <button id="btnReloadForms" class="btn btn-sm btn-light border" type="button"><i class="fas fa-sync-alt"></i></button>
+                    </div>
+                    <div class="card-body p-0">
+                      <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                          <thead class="table-light text-secondary small text-uppercase">
+                            <tr>
+                              <th class="ps-4">Título</th>
+                              <th>Estado</th>
+                              <th>Última Act.</th>
+                              <th class="text-end pe-4">Acciones</th>
+                            </tr>
+                          </thead>
+                          <tbody id="formsTbody"></tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tab-pane fade" id="tabSubs" role="tabpanel">
+              <div class="fv-admin-card card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-white border-bottom pt-4 px-4 pb-3">
+                  <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <h5 class="mb-0 fw-bold"><i class="fas fa-clipboard-check me-2 text-primary"></i>Gestión de Inscritos</h5>
+                    <div class="d-flex gap-2 flex-wrap bg-light p-1 rounded-3">
+                      <select id="sFormFilter" class="form-select form-select-sm border-0 bg-transparent" style="max-width: 200px; min-width: 150px;"></select>
+                      <div class="vr mx-1"></div>
+                      <select id="sStatus" class="form-select form-select-sm border-0 bg-transparent" style="width: auto;">
+                        <option value="new">Nuevas</option>
+                        <option value="reviewed">Revisadas</option>
+                        <option value="archived">Archivadas</option>
+                        <option value="all">Todas</option>
+                      </select>
+                      <button id="btnExportSubs" class="btn btn-sm btn-success rounded-2 ms-1" type="button">
+                        <i class="fas fa-file-excel"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body p-0">
+                  <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="table-light text-secondary small text-uppercase">
+                          <tr>
+                            <th class="ps-4">Fecha</th>
+                            <th>Formulario</th>
+                            <th>Estado</th>
+                            <th class="text-end pe-4">Acciones</th>
+                          </tr>
+                        </thead>
+                        <tbody id="subsTbody"></tbody>
+                    </table>
+                  </div>
+                </div>
+                <div class="card-footer bg-white border-0 py-3 px-4 d-flex justify-content-between">
+                  <small class="text-muted fw-bold" id="subsCount">-</small>
+                  <button id="btnMoreSubs" class="btn btn-sm btn-outline-primary rounded-pill" type="button">Cargar más</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="tab-pane fade" id="tabProjects" role="tabpanel">
+              <div class="row g-4">
+                  <div class="col-lg-5">
+                    <div class="fv-admin-card card border-0 shadow-sm rounded-4 h-100">
+                        <div class="card-header bg-white border-0 pt-4 px-4">
+                          <h5 class="mb-0 fw-bold text-primary"><i class="fas fa-edit me-2"></i>Gestionar Proyecto</h5>
+                        </div>
+                        <div class="card-body p-4">
+                          <form id="projectForm" class="row g-3">
+                              <input type="hidden" id="pEditId" />
+                              <div class="col-12">
+                                <label class="form-label small text-uppercase fw-bold text-secondary">Título</label>
+                                <input class="form-control bg-light border-0" id="pTitle" maxlength="120" required />
+                              </div>
+                              <div class="col-12">
+                                <label class="form-label small text-uppercase fw-bold text-secondary">Resumen</label>
+                                <textarea class="form-control bg-light border-0" id="pSummary" rows="2" maxlength="600"></textarea>
+                              </div>
+                              <div class="col-12">
+                                <label class="form-label small text-uppercase fw-bold text-secondary">Impacto</label>
+                                <textarea class="form-control bg-light border-0" id="pImpact" rows="2" maxlength="600"></textarea>
+                              </div>
+                              <div class="col-md-6">
+                                <label class="form-label small text-uppercase fw-bold text-secondary">Ubicación</label>
+                                <input class="form-control bg-light border-0" id="pLocation" />
+                              </div>
+                              <div class="col-md-6">
+                                <label class="form-label small text-uppercase fw-bold text-secondary">Periodo</label>
+                                <input class="form-control bg-light border-0" id="pPeriod" />
+                              </div>
+                              <div class="col-6">
+                                <label class="form-label small text-uppercase fw-bold text-secondary">Fecha Orden</label>
+                                <input class="form-control bg-light border-0" id="pDate" type="date" />
+                              </div>
+                              <div class="col-6 d-flex align-items-center flex-wrap pt-4">
+                                <div class="form-check form-switch me-3">
+                                    <input class="form-check-input" type="checkbox" id="pFeatured">
+                                    <label class="form-check-label small" for="pFeatured">Destacado</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="pActive" checked>
+                                    <label class="form-check-label small" for="pActive">Visible</label>
+                                </div>
+                              </div>
+                              <div class="col-12">
+                                <label class="form-label small text-uppercase fw-bold text-secondary">Portada</label>
+                                <input class="form-control" id="pFile" type="file" accept="image/*" />
+                              </div>
+                              <div class="col-12">
+                                <input class="form-control bg-light border-0 form-control-sm" id="pCoverUrl" placeholder="o URL..." />
+                              </div>
+                              
+                              <div class="col-12 d-flex gap-2 mt-3">
+                                <button class="btn btn-verde flex-fill shadow-sm" type="submit">Guardar</button>
+                                <button class="btn btn-light border flex-fill" type="button" id="btnClearProjectForm">Limpiar</button>
+                              </div>
+                              <div class="col-12">
+                                <div id="pProgress" class="progress d-none" style="height: 5px;">
+                                    <div class="progress-bar bg-primary" role="progressbar" style="width: 0%"></div>
+                                </div>
+                              </div>
+                          </form>
+                        </div>
+                    </div>
+                  </div>
+
+                  <div class="col-lg-7">
+                    <div class="fv-admin-card card border-0 shadow-sm rounded-4 h-100">
+                        <div class="card-header bg-white border-bottom pt-4 px-4 pb-3 d-flex justify-content-between align-items-center">
+                          <h5 class="mb-0 fw-bold"><i class="fas fa-list-alt me-2 text-secondary"></i>Portafolio</h5>
+                          <button id="btnExportProjects" class="btn btn-sm btn-outline-success rounded-pill" type="button">Excel</button>
+                        </div>
+                        <div class="card-body p-0">
+                          <div class="table-responsive">
+                              <table class="table table-hover align-middle mb-0">
+                                <thead class="table-light text-secondary small text-uppercase">
+                                    <tr>
+                                      <th class="ps-4">Título</th>
+                                      <th>Estado</th>
+                                      <th>Fecha</th>
+                                      <th class="text-end pe-4">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="projectsTbody"></tbody>
+                              </table>
+                          </div>
+
+                          
+                        </div>
+                        <div class="card-footer bg-white border-0 py-3 px-4 d-flex justify-content-between">
+                          <small class="text-muted fw-bold" id="projectsCount">-</small>
+                          <button id="btnMoreProjects" class="btn btn-link text-decoration-none btn-sm" type="button">Cargar más...</button>
+                        </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+
+            <div class="tab-pane fade" id="tabConfig" role="tabpanel">
+                <div class="row g-4">
+                    
+                    <div class="col-lg-6">
+                        <div class="fv-admin-card card border-0 shadow-sm rounded-4 h-100">
+                            <div class="card-header bg-white border-bottom py-4 px-4">
+                                <div class="d-flex align-items-center">
+                                    <span class="bg-primary bg-opacity-10 text-primary rounded-circle p-2 me-3">
+                                        <i class="fas fa-user-plus fa-lg"></i>
+                                    </span>
+                                    <h5 class="mb-0 fw-bold text-dark">Inscripciones</h5>
+                                </div>
+                            </div>
+
+                            <div class="card-body p-4">
+                                <div class="bg-light p-3 rounded-3 border mb-4">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="fw-bold text-dark mb-1">Estado del Módulo</h6>
+                                            <p class="small text-muted mb-0" id="statusTextIns">Control de visibilidad pública.</p>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" style="width: 3em; height: 1.5em; cursor: pointer;" type="checkbox" id="insEnabled" checked>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="insClosedConfig" class="transition-all">
+                                    <small class="text-uppercase text-muted fw-bold mb-2 d-block" style="font-size: 0.75rem;">Mensaje de Cierre</small>
+                                    
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control bg-light border-0 fw-bold" id="insClosedTitle" placeholder="Título" value="Inscripciones Cerradas">
+                                        <label for="insClosedTitle">Título del aviso</label>
+                                    </div>
+                                    
+                                    <div class="form-floating mb-4">
+                                        <textarea class="form-control bg-light border-0" id="insClosedMsg" placeholder="Mensaje" style="height: 100px"></textarea>
+                                        <label for="insClosedMsg">Explicación para el usuario</label>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-end align-items-center mt-auto">
+                                    <small id="insConfigHint" class="text-success fw-bold me-3 fade"></small>
+                                    <button id="btnSaveInsConfig" class="btn btn-verde px-4 py-2 shadow-sm rounded-3 w-100" type="button">
+                                        <i class="fas fa-save me-2"></i>Guardar Inscripciones
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="fv-admin-card card border-0 shadow-sm rounded-4 h-100">
+                            <div class="card-header bg-white border-bottom py-4 px-4">
+                                <div class="d-flex align-items-center">
+                                    <span class="bg-warning bg-opacity-10 text-warning rounded-circle p-2 me-3">
+                                        <i class="fas fa-envelope-open-text fa-lg"></i>
+                                    </span>
+                                    <h5 class="mb-0 fw-bold text-dark">Formulario de Contacto</h5>
+                                </div>
+                            </div>
+
+                            <div class="card-body p-4">
+                                <div class="bg-light p-3 rounded-3 border mb-4">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="fw-bold text-dark mb-1">Estado del Buzón</h6>
+                                            <p class="small text-muted mb-0" id="statusTextContact">Recepción de mensajes.</p>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" style="width: 3em; height: 1.5em; cursor: pointer;" type="checkbox" id="contactEnabled">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="contactClosedConfig" class="transition-all">
+                                    <small class="text-uppercase text-muted fw-bold mb-2 d-block" style="font-size: 0.75rem;">Mensaje de Bloqueo</small>
+
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control bg-light border-0 fw-bold" id="contactClosedTitle" placeholder="Título" value="Buzón lleno o cerrado">
+                                        <label for="contactClosedTitle">Título del aviso</label>
+                                    </div>
+                                    
+                                    <div class="form-floating mb-4">
+                                        <textarea class="form-control bg-light border-0" id="contactClosedMsg" placeholder="Mensaje" style="height: 100px"></textarea>
+                                        <label for="contactClosedMsg">Explicación para el usuario</label>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-end align-items-center mt-auto">
+                                    <small id="contactConfigHint" class="text-success fw-bold me-3 fade"></small>
+                                    <button id="btnSaveContactConfig" class="btn btn-warning text-white px-4 py-2 shadow-sm rounded-3 w-100" type="button">
+                                        <i class="fas fa-save me-2"></i>Guardar Contacto
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+              </div>
+            </div>
+          </div> 
+          </div>
+    </section>
+  </main>
+
+  <!-- Modal: Contact Detail -->
+  <div class="modal fade" id="contactModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fas fa-envelope-open-text me-2"></i>Mensaje</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-3">
+            <div class="col-md-6"><div class="small text-muted">Nombre</div><div class="fw-semibold" id="cmName">—</div></div>
+            <div class="col-md-6"><div class="small text-muted">Correo</div><div class="fw-semibold" id="cmEmail">—</div></div>
+            <div class="col-md-6"><div class="small text-muted">Teléfono</div><div class="fw-semibold" id="cmPhone">—</div></div>
+            <div class="col-md-6"><div class="small text-muted">Fecha</div><div class="fw-semibold" id="cmDate">—</div></div>
+            <div class="col-12"><div class="small text-muted">Asunto</div><div class="fw-semibold" id="cmSubject">—</div></div>
+            <div class="col-12">
+              <div class="small text-muted">Mensaje</div>
+              <div class="p-3 bg-light rounded" id="cmMessage" style="white-space:pre-wrap;">—</div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="cmMarkRead" class="btn btn-outline-primary" type="button">Marcar leído</button>
+          <button id="cmArchive" class="btn btn-outline-secondary" type="button">Archivar</button>
+          <button id="cmDelete" class="btn btn-outline-danger" type="button">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Submission Detail -->
+  <div class="modal fade" id="subModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fas fa-user-check me-2"></i>Inscripción</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="small text-muted mb-2">Formulario: <span id="smForm">—</span></div>
+          <div class="small text-muted mb-2">Fecha: <span id="smDate">—</span></div>
+          <div class="small text-muted mb-2">Estado: <span id="smStatus">—</span></div>
+          <hr>
+          <div id="smAnswers"></div>
+        </div>
+        <div class="modal-footer">
+          <button id="smReviewed" class="btn btn-outline-primary" type="button">Marcar revisada</button>
+          <button id="smArchive" class="btn btn-outline-secondary" type="button">Archivar</button>
+          <button id="smDelete" class="btn btn-outline-danger" type="button">Eliminar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Add/Edit Field -->
+  <div class="modal fade" id="fieldModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fas fa-circle-plus me-2"></i>Pregunta</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <form id="fieldForm" class="row g-3">
+            <input type="hidden" id="ffIndex">
+            <div class="col-12">
+              <label class="form-label">Etiqueta</label>
+              <input class="form-control" id="ffLabel" maxlength="120" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Tipo</label>
+              <select class="form-select" id="ffType">
+                <option value="text">Texto</option>
+                <option value="textarea">Texto largo</option>
+                <option value="email">Correo</option>
+                <option value="phone">Teléfono</option>
+                <option value="number">Número</option>
+                <option value="date">Fecha</option>
+                <option value="select">Lista (Select)</option>
+                <option value="radio">Opción única (Radio)</option>
+                <option value="multiselect">Selección múltiple (Checkbox)</option>
+              </select>
+            </div>
+            <div class="col-md-6 d-flex align-items-end">
+              <div class="form-check form-switch">
+                <input class="form-check-input" type="checkbox" id="ffRequired">
+                <label class="form-check-label" for="ffRequired">Obligatorio</label>
+              </div>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Ayuda (opcional)</label>
+              <input class="form-control" id="ffHelp" maxlength="200" />
+            </div>
+            <div class="col-12" id="ffOptionsWrap">
+              <label class="form-label">Opciones (una por línea)</label>
+              <textarea class="form-control" id="ffOptions" rows="4" maxlength="2000" placeholder="Ej:
+Masculino
+Femenino
+Otro"></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancelar</button>
+          <button id="ffSave" class="btn btn-verde" type="button">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- SheetJS (Excel) -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <script type="module" src="js/admin.js"></script>
+
+
+  <!-- Modal: Álbum - Fotos -->
+  <div class="modal fade" id="albumPhotosModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div>
+            <h5 class="modal-title mb-0" id="apmTitle">Álbum</h5>
+            <div class="text-muted small" id="apmMeta">—</div>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+
+        <div class="modal-body p-0">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0 text-nowrap">
+              <thead class="table-light text-secondary small text-uppercase">
+                <tr>
+                  <th class="ps-4">Preview</th>
+                  <th>Descripción</th>
+                  <th>Orden</th>
+                  <th>Estado</th>
+                  <th class="text-end pe-4">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="albumPhotosTbody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="modal-footer d-flex justify-content-between align-items-center">
+          <small class="text-muted fw-bold" id="albumPhotosCount">0 cargadas</small>
+          <div class="d-flex gap-2">
+            <button id="btnExportAlbumPhotos" class="btn btn-outline-success" type="button">
+              <i class="fas fa-file-excel me-2"></i>Excel
+            </button>
+            <button id="btnMoreAlbumPhotos" class="btn btn-primary" type="button">
+              Ver más <i class="fas fa-chevron-down ms-1"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
