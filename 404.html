@@ -3,191 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>404 | FUNDVISA</title>
-    <meta name="description" content="Página no encontrada.">
+    <title>Página no encontrada | FUNDVISA</title>
     <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" href="img/ico.png" type="image/x-icon">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="css/fundvisa.css">
+
+    <style>
+        /* =========================================
+           DISEÑO 404 PREMIUM
+           ========================================= */
+        body {
+            /* Mismo fondo de marca de agua que Inscripciones */
+            background-color: #f4f7f6;
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(0, 91, 154, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 0%, rgba(59, 181, 74, 0.08) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(0, 91, 154, 0.05) 0px, transparent 50%);
+            background-attachment: fixed;
+            font-family: 'Poppins', sans-serif;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .error-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px); /* Efecto vidrio */
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 25px 50px -12px rgba(0, 50, 100, 0.15);
+            padding: 3rem 2rem;
+            text-align: center;
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+            /* Borde superior con gradiente corporativo */
+            border-top: 6px solid transparent;
+            background-clip: padding-box;
+        }
+
+        /* Truco para borde gradiente superior */
+        .error-card::before {
+            content: '';
+            position: absolute;
+            top: -6px; left: 0; right: 0; height: 6px;
+            background: linear-gradient(90deg, var(--color-azul, #005B9A), var(--color-verde, #3BB54A));
+            border-radius: 24px 24px 0 0;
+            z-index: -1;
+        }
+
+        /* Texto 404 Gigante y Animado */
+        .error-code {
+            font-size: 8rem;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 0;
+            /* Texto con Gradiente */
+            background: linear-gradient(135deg, var(--color-azul, #005B9A) 0%, var(--color-verde, #3BB54A) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            /* Animación Flotante */
+            animation: float 4s ease-in-out infinite;
+            display: inline-block;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .error-title {
+            font-weight: 700;
+            color: #333;
+            margin-top: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .error-desc {
+            color: #6c757d;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        /* Botones personalizados */
+        .btn-home {
+            background: var(--color-azul, #005B9A);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            color: white;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 91, 154, 0.3);
+        }
+
+        .btn-home:hover {
+            background: #004475;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 91, 154, 0.4);
+            color: white;
+        }
+
+        .btn-back {
+            color: #6c757d;
+            font-weight: 600;
+            text-decoration: none;
+            margin-right: 15px;
+            transition: color 0.3s;
+        }
+        .btn-back:hover {
+            color: var(--color-verde, #3BB54A);
+        }
+
+        /* Elementos decorativos de fondo (círculos borrosos) */
+        .bg-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.6;
+        }
+        .shape-1 {
+            width: 300px; height: 300px;
+            background: rgba(59, 181, 74, 0.2);
+            top: -100px; left: -100px;
+        }
+        .shape-2 {
+            width: 250px; height: 250px;
+            background: rgba(0, 91, 154, 0.2);
+            bottom: -50px; right: -50px;
+        }
+    </style>
 </head>
 <body>
 
-<header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top">
-            <div class="container">
-                <a class="navbar-brand" href="#">
-                    <img src="img/logo.png" alt="Logo FUNDVISA">
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item"><a class="nav-link" href="index.html#inicio">Inicio</a></li>
-                        <li class="nav-item"><a class="nav-link" href="index.html#quienes-somos">Quiénes Somos</a></li>
-                        <li class="nav-item"><a class="nav-link" href="index.html#servicios">Servicios</a></li>
-                        <li class="nav-item"><a class="nav-link" href="index.html#proyectos">Proyectos</a></li>
-                        <li class="nav-item"><a class="nav-link" href="index.html#galeria">Galería</a></li>
-                    </ul>
-                    <a href="index.html#contacto" class="btn btn-verde ms-lg-3">Contáctanos</a>
-                </div>
-            </div>
-        </nav>
-    </header>
+    <div class="bg-shape shape-1"></div>
+    <div class="bg-shape shape-2"></div>
 
-
-<main>
-  <section class="hero-section" style="min-height: 85vh;">
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-      <h1 class="display-4">404</h1>
-      <h2 class="h4 mt-2">Página no encontrada</h2>
-      <p class="lead my-4">Puede que el enlace esté roto o que la página haya sido movida. Revisa la URL o vuelve al inicio.</p>
-      <div class="d-flex flex-wrap gap-3 justify-content-center">
-        <a href="index.html" class="btn btn-verde btn-lg"><i class="fas fa-house me-2"></i>Ir al Inicio</a>
-        <a href="contacto.html" class="btn btn-outline-light btn-lg" style="border-color: rgba(255,255,255,0.6); color: #fff;">
-          <i class="fas fa-envelope me-2"></i>Contactar
+    <div class="container d-flex flex-column align-items-center">
+        
+        <a href="index.html" class="mb-4 animate__animated animate__fadeInDown">
+            <img src="img/logo.png" alt="FUNDVISA" style="height: 70px;" class="img-fluid">
         </a>
-      </div>
 
-      <div class="mt-5">
-        <p class="small mb-1" style="color: rgba(255,255,255,0.85);">Atajos:</p>
-        <div class="d-flex flex-wrap gap-2 justify-content-center">
-          <a href="proyectos.html" class="badge rounded-pill text-bg-light text-decoration-none">Proyectos</a>
-          <a href="galeria.html" class="badge rounded-pill text-bg-light text-decoration-none">Galería</a>
-          <a href="inscripciones.html" class="badge rounded-pill text-bg-light text-decoration-none">Inscripciones</a>
+        <div class="error-card animate__animated animate__fadeInUp">
+            
+            <div class="error-code">404</div>
+            
+            <h1 class="error-title">¡Ups! Página no encontrada</h1>
+            <p class="error-desc">
+                Parece que la página que buscas se ha movido, eliminado o no existe.
+            </p>
+
+            <div class="d-flex justify-content-center align-items-center flex-wrap gap-3">
+                <a href="#" onclick="history.back(); return false;" class="btn-back">
+                    <i class="fas fa-arrow-left me-2"></i>Volver atrás
+                </a>
+                
+                <a href="index.html" class="btn btn-home">
+                    Ir al Inicio <i class="fas fa-home ms-2"></i>
+                </a>
+            </div>
+
         </div>
-      </div>
+
+        <div class="mt-4 text-muted small animate__animated animate__fadeIn">
+            &copy; 2026 FUNDVISA. Todos los derechos reservados.
+        </div>
     </div>
-  </section>
-</main>
-
-
-<footer class="footer">
-        <div class="container">
-            <div class="row mb-5">
-                <div class="col-lg-5 mb-4 mb-lg-0">
-                    <img src="img/logo.png" alt="Logo FUNDVISA" class="footer-logo">
-                    <p class="mb-4" style="color: rgba(255,255,255,0.8);">Transformando vidas a través del deporte y el bienestar, promoviendo hábitos saludables para una comunidad más activa y saludable.</p>
-                    <div class="mb-4">
-                        <a href="https://instagram.com/fun_dvisa" target="_blank" class="social-icon"><i class="fab fa-instagram"></i></a>
-                        <a href="https://www.tiktok.com/@fun_dvisa" target="_blank" class="social-icon"><i class="fab fa-tiktok"></i></a>
-                        <a href="https://www.youtube.com/@fun_dvisa" target="_blank" class="social-icon"><i class="fab fa-youtube"></i></a>
-                        <a href="https://facebook.com/fundvisa" target="_blank" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
-                    <h5 class="text-white mb-4 fw-bold">Enlaces Rápidos</h5>
-                    <ul class="footer-links list-unstyled">
-                        <li><a href="index.html#inicio">Inicio</a></li>
-                        <li><a href="index.html#quienes-somos">Quiénes Somos</a></li>
-                        <li><a href="index.html#servicios">Servicios</a></li>
-                        <li><a href="index.html#proyectos">Proyectos</a></li>
-                        <li><a href="index.html#galeria">Galería</a></li>
-                        <li><a href="index.html#contacto">Contacto</a></li>
-                    </ul>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <h5 class="text-white mb-4 fw-bold">Newsletter</h5>
-                    <p style="color: rgba(255,255,255,0.8);">Suscríbete para recibir noticias sobre nuestros programas y eventos.</p>
-                    <div class="input-group mb-3">
-                        <input type="email" class="form-control" placeholder="Tu email" style="border-radius: 50px 0 0 50px; border: none; padding: 12px 20px;">
-                        <button class="btn btn-verde" type="button" style="border-radius: 0 50px 50px 0;">Suscribir</button>
-                    </div>
-                </div>
-            </div>
-            <hr style="background-color: rgba(255,255,255,0.2); opacity: 1;">
-            <div class="row align-items-center pt-4">
-                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                    <p class="mb-0">© 2025 FUNDVISA | Todos los derechos reservados.</p>
-                </div>
-                <div class="col-md-6 text-center text-md-end">
-                    <a href="privacidad.html" class="text-white-50 text-decoration-none me-3">Política de Privacidad</a>
-                    <a href="cookies.html" class="text-white-50 text-decoration-none">Política de Cookies</a>
-                </div>
-            </div>
-            <div class="text-center mt-3">
-                <p class="small mb-0" style="color: rgba(255,255,255,0.6);">Desarrollado con 🖤 por <a href="https://chococreativo.com.co/proyectos" target="_blank" style="color: rgba(255,255,255,0.8); text-decoration: none;"><strong>Choco Creativo</strong></a></p>
-            </div>
-        </div>
-    </footer>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-        // Navbar scroll
-        window.addEventListener('scroll', () => {
-            const navbar = document.querySelector('.navbar');
-            navbar.classList.toggle('scrolled', window.scrollY > 50);
-        });
-
-        // Scroll animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animated');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.animate-on-scroll').forEach(el => observer.observe(el));
-
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    window.scrollTo({
-                        top: target.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-
-        // Form submit
-        document.querySelector('.contact-form')?.addEventListener('submit', (e) => {
-            e.preventDefault();
-            alert('¡Gracias por tu mensaje! Nos pondremos en contacto contigo pronto.');
-            e.target.reset();
-        });
-
-        // Lightbox
-        document.getElementById('lightboxModal')?.addEventListener('show.bs.modal', (e) => {
-            const img = e.relatedTarget.getAttribute('data-img');
-            e.target.querySelector('.img-fluid').src = img;
-        });
-
-        // Scroll to top
-        const scrollBtn = document.querySelector('.scroll-to-top');
-        window.addEventListener('scroll', () => {
-            scrollBtn.classList.toggle('show', window.scrollY > 300);
-        });
-
-        // Update active nav link
-        const sections = document.querySelectorAll('section[id]');
-        window.addEventListener('scroll', () => {
-            const scrollY = window.pageYOffset;
-            sections.forEach(section => {
-                const sectionHeight = section.offsetHeight;
-                const sectionTop = section.offsetTop - 100;
-                const sectionId = section.getAttribute('id');
-                if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
-                    document.querySelector('.nav-link.active')?.classList.remove('active');
-                    document.querySelector(`.nav-link[href="#${sectionId}"]`)?.classList.add('active');
-                }
-            });
-        });
-    </script>
 
 </body>
 </html>
