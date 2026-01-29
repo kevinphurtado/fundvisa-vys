@@ -5,55 +5,11 @@ import {
   collection, doc, getDoc, getDocs, query, where, orderBy, limit, addDoc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
 
+import {
+  getStorage, ref as sRef, uploadBytes, getDownloadURL
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-storage.js";
 
-
-async function gateInscripciones() {
-  let cfg = { enabled: true, closedTitle: "Inscripciones cerradas", closedMsg: "Por el momento no tenemos convocatorias abiertas." };
-
-  try {
-    const snap = await getDoc(doc(db, "config", "inscripciones"));
-    if (snap.exists()) {
-      const d = snap.data() || {};
-      cfg.enabled = d.enabled !== false;
-      cfg.closedTitle = String(d.closedTitle || cfg.closedTitle);
-      cfg.closedMsg = String(d.closedMsg || cfg.closedMsg);
-    }
-  } catch (e) {
-    // si falla, no bloquees la página
-    console.warn("No se pudo leer config/inscripciones", e);
-  }
-
-  if (!cfg.enabled) {
-    // Cambia hero
-    const titleEl = document.getElementById("fvInsTitle");
-    const descEl = document.getElementById("fvInsDesc");
-    if (titleEl) titleEl.textContent = cfg.closedTitle;
-    if (descEl) descEl.textContent = cfg.closedMsg;
-
-    // Oculta el card del formulario
-    document.querySelector(".registration-card")?.classList.add("d-none");
-
-    // Muestra el empty como “cerrado”
-    const empty = document.getElementById("fvInsEmpty");
-    if (empty) {
-      empty.classList.remove("d-none");
-      const h4 = empty.querySelector("h4");
-      const p = empty.querySelector("p");
-      if (h4) h4.textContent = cfg.closedTitle;
-      if (p) p.textContent = cfg.closedMsg;
-    }
-    return false;
-  }
-
-  return true;
-}
-
-// Uso:
-const ok = await gateInscripciones();
-if (!ok) {
-  // no cargues formularios
-  // return;
-}
+const storage = getStorage();
 
 
 (function initInscripciones() {
@@ -75,6 +31,50 @@ if (!ok) {
   let pagesFields = []; // Array<Array<field>>
   let currentPage = 0;
   let totalPages = 1;
+
+  // =============================================================
+  // PAGO MANUAL (SIN BACKEND): Link de pago + comprobante
+  // - Bloquea preguntas hasta subir comprobante.
+  // - El botón de pago abre tu link de Mercado Pago (Checkout Pro Link / Link de pago).
+  // =============================================================
+  const PAY_LS_KEY = "fv_pay_state_v1";
+
+  // ⚠️ REEMPLAZA mpLink por tus 4 links reales de Mercado Pago
+  // (ej: https://mpago.la/XXXXXX)
+  const PAY_PLANS = [
+    { code: "GENERAL_ST", label: "Plan General - Sin transporte", amount: 80000, mpLink: "https://mpago.li/15Xi7NF" },
+    { code: "GENERAL_CT", label: "Plan General - Con transporte", amount: 95000, mpLink: "https://mpago.li/15Xi7NF" },
+    { code: "DESAFIO_ST", label: "Plan Desafío - Sin transporte", amount: 90000, mpLink: "https://mpago.li/15Xi7NF" },
+    { code: "DESAFIO_CT", label: "Plan Desafío - Con transporte", amount: 105000, mpLink: "https://mpago.li/15Xi7NF" },
+  ];
+
+  function loadPayState() {
+    try { return JSON.parse(localStorage.getItem(PAY_LS_KEY) || "null"); } catch { return null; }
+  }
+  function savePayState(x) {
+    try { localStorage.setItem(PAY_LS_KEY, JSON.stringify(x)); } catch { /* ignore */ }
+  }
+  function clearPayState() {
+    try { localStorage.removeItem(PAY_LS_KEY); } catch { /* ignore */ }
+  }
+
+  function freshPayState(formId) {
+    return {
+      payId: uid("pay"),
+      formId: String(formId || ""),
+      planCode: "",
+      planLabel: "",
+      amount: 0,
+      mpLink: "",
+      clickedPay: false,
+      proof: { url: "", storagePath: "", fileName: "", uploadedAt: 0 },
+      unlocked: false
+    };
+  }
+
+  let payState = loadPayState() || freshPayState("");
+
+
 
   (async () => {
     try {
@@ -122,10 +122,24 @@ if (!ok) {
     activeForm = formsCache.find(f => f.id === id) || formsCache[0];
     if (!activeForm) return;
 
-    // Actualiza el Hero Text también para dar contexto
+    // ELIMINAR O COMENTAR ESTE BLOQUE:
+    /* if (!payState?.unlocked || !payState?.proof?.url) {
+      toast("Debes subir el comprobante de pago para poder enviar la inscripción.", "warning");
+      return;
+    }
+    */
+
+    // Si el usuario cambia de evento, reinicia el flujo de pago
+    if (!payState || String(payState.formId || "") !== String(activeForm.id || "")) {
+      payState = freshPayState(activeForm.id);
+      savePayState(payState);
+    }
+
+    // Actualiza el Hero Text
     if (titleEl) titleEl.textContent = activeForm.title || "Inscripción";
     if (descEl) descEl.textContent = activeForm.desc || "Completa tus datos a continuación.";
 
+    // Renderiza siempre (el renderForm se encarga de mostrar/ocultar según el estado)
     renderForm(activeForm);
   }
 
@@ -152,17 +166,354 @@ if (!ok) {
     `).join("");
 
     formEl.innerHTML = `
-      ${renderPagerTop()}
-      <div id="fvInsPages">${pagesHtml}</div>
-      ${renderPagerNav()}
-      <p class="text-center text-muted small mt-3 mb-0">
-        <i class="fas fa-lock me-1"></i> Tus datos están seguros con FUNDVISA.
-      </p>
+      ${renderPaymentGate()}
+      <div id="fvQuestionsWrap" class="${payState.unlocked ? "" : "d-none"}">
+        ${renderPagerTop()}
+        <div id="fvInsPages">${pagesHtml}</div>
+        ${renderPagerNav()}
+        <p class="text-center text-muted small mt-3 mb-0">
+          <i class="fas fa-lock me-1"></i> Tus datos están seguros con FUNDVISA.
+        </p>
+      </div>
     `;
 
+    wirePaymentGate();
     wirePager();
-    updatePagerUI();
+    if (payState.unlocked) updatePagerUI();
   }
+
+  function renderPaymentGate() {
+    const opts = PAY_PLANS.map(p => `
+      <option value="${p.code}" ${p.code === payState.planCode ? "selected" : ""}>
+        ${p.label} ($${p.amount.toLocaleString("es-CO")})
+      </option>
+    `).join("");
+
+    const hasLink = !!payState?.mpLink;
+    const proofOk = !!payState?.proof?.url;
+    const isCollapsed = proofOk; //  cuando ya hay comprobante, colapsa por defecto
+
+    return `
+      <div class="mb-4">
+        <div class="border rounded-4 overflow-hidden bg-white shadow-sm">
+          <!-- Header -->
+          <div class="p-3 p-md-4 d-flex align-items-start justify-content-between gap-3"
+              style="background: linear-gradient(180deg, rgba(13,110,253,.08), rgba(25,135,84,.04));">
+            <div class="pe-2">
+              <div class="d-flex align-items-center gap-2">
+                <div class="fw-bold text-dark fs-5">Pago e Inscripción</div>
+                <span class="badge ${payState.unlocked ? "text-bg-success" : "text-bg-secondary"}">
+                  ${payState.unlocked ? "Habilitado" : "Bloqueado"}
+                </span>
+              </div>
+              <div class="small text-muted mt-1">
+                1) Elige tu plan • 2) Paga en Mercado Pago • 3) Sube el comprobante para continuar.
+              </div>
+            </div>
+
+            <!-- Toggle (aparece cuando ya subió comprobante) -->
+            <button type="button"
+                    class="btn btn-sm ${proofOk ? "btn-outline-success" : "btn-outline-secondary"}"
+                    id="fvPayToggle"
+                    ${proofOk ? "" : "disabled"}
+                    aria-expanded="${isCollapsed ? "false" : "true"}"
+                    aria-controls="fvPayBody">
+              <i class="fas ${isCollapsed ? "fa-chevron-down" : "fa-chevron-up"} me-2"></i>
+              ${isCollapsed ? "Ver pago" : "Ocultar"}
+            </button>
+          </div>
+
+          <!-- Body -->
+          <div id="fvPayBody" class="p-3 p-md-4 ${isCollapsed ? "d-none" : ""}">
+            <div class="row g-3 align-items-end">
+              <div class="col-12">
+                <label class="form-label mb-1">Plan</label>
+                <select class="form-select" id="fvPayPlan" ${payState.unlocked ? "disabled" : ""}>
+                  <option value="">Selecciona un plan...</option>
+                  ${opts}
+                </select>
+              </div>
+
+              <div class="col-12 col-md-7">
+                <div class="small text-muted mb-1">Total</div>
+                <div class="d-flex align-items-baseline gap-2">
+                  <div class="fs-3 fw-bold" id="fvPayAmount">
+                    $${Number(payState.amount || 0).toLocaleString("es-CO")}
+                  </div>
+                  <span class="small text-muted">COP</span>
+                </div>
+              </div>
+
+              <div class="col-12 col-md-5 d-grid">
+                <a id="fvPayBtn"
+                  class="btn btn-primary ${hasLink ? "" : "disabled"}"
+                  href="${hasLink ? payState.mpLink : "#"}"
+                  target="_blank" rel="noopener">
+                  <i class="fas fa-credit-card me-2"></i> Pagar en Mercado Pago
+                </a>
+              </div>
+
+              <!-- Uploader -->
+              <div class="col-12">
+                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-1">
+                  <label class="form-label mb-0">Comprobante</label>
+                  <span class="badge ${proofOk ? "text-bg-success" : "text-bg-warning"}">
+                    ${proofOk ? "Cargado" : "Pendiente"}
+                  </span>
+                </div>
+
+                <div class="border rounded-3 p-3 bg-light">
+                  <div class="row g-2 align-items-center">
+                    <div class="col-12 col-md">
+                      <input class="form-control"
+                            type="file"
+                            id="fvPayProof"
+                            accept="image/*,application/pdf"
+                            ${payState.unlocked ? "disabled" : ""} />
+                      <div class="form-text mt-2">
+                        Máx. 8MB. Formatos: imagen o PDF.
+                      </div>
+                    </div>
+
+                    <div class="col-12 col-md-auto d-grid">
+                      <button type="button"
+                              class="btn btn-success"
+                              id="fvPayUpload"
+                              ${proofOk ? "disabled" : ""}>
+                        <i class="fas fa-upload me-2"></i> Subir y habilitar
+                      </button>
+                    </div>
+                  </div>
+
+                  ${proofOk ? `
+                    <div class="mt-3 p-2 rounded-3 bg-white border d-flex align-items-center justify-content-between flex-wrap gap-2">
+                      <div class="small text-muted">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        Comprobante cargado. Puedes continuar con la inscripción.
+                      </div>
+                      <a class="btn btn-sm btn-outline-secondary" href="${payState.proof.url}" target="_blank" rel="noopener">
+                        <i class="fas fa-receipt me-2"></i> Ver comprobante
+                      </a>
+                    </div>
+                  ` : `
+                    <div class="mt-3 small text-muted">
+                      <i class="fas fa-info-circle me-2"></i>
+                      Después de pagar, vuelve aquí y sube el comprobante para desbloquear el formulario.
+                    </div>
+                  `}
+                </div>
+              </div>
+
+              <!-- Actions -->
+              <div class="col-12 d-grid d-md-flex justify-content-md-end gap-2 mt-1">
+                <button type="button" class="btn btn-outline-secondary" id="fvPayReset">
+                  <i class="fas fa-rotate-left me-2"></i> Reiniciar pago
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mini bar cuando está colapsado -->
+        ${proofOk ? `
+          <div id="fvPayMini"
+              class="mt-2 border rounded-4 p-2 px-3 bg-white shadow-sm d-flex align-items-center justify-content-between gap-2">
+            <div class="small text-muted">
+              <i class="fas fa-lock-open text-success me-2"></i>
+              Pago verificado manualmente: <b>${payState.planLabel || payState.planCode || "Plan"}</b> •
+              <b>$${Number(payState.amount || 0).toLocaleString("es-CO")}</b>
+            </div>
+            <button type="button" class="btn btn-sm btn-outline-secondary" id="fvPayToggleMini">
+              <i class="fas fa-chevron-down me-2"></i> Ver
+            </button>
+          </div>
+        ` : ""}
+      </div>
+    `;
+  }
+
+
+  function wirePaymentGate() {
+    const planSel = formEl.querySelector("#fvPayPlan");
+    const payBtn  = formEl.querySelector("#fvPayBtn");
+    const amount  = formEl.querySelector("#fvPayAmount");
+    const proofIn = formEl.querySelector("#fvPayProof");
+    const upBtn   = formEl.querySelector("#fvPayUpload");
+    const resetBtn= formEl.querySelector("#fvPayReset");
+
+    function setPlan(code) {
+      const p = PAY_PLANS.find(x => x.code === code);
+      if (!p) {
+        payState.planCode = "";
+        payState.planLabel = "";
+        payState.amount = 0;
+        payState.mpLink = "";
+        payState.clickedPay = false;
+        savePayState(payState);
+        amount && (amount.textContent = "$0");
+        if (payBtn) {
+          payBtn.classList.add("disabled");
+          payBtn.href = "#";
+        }
+        return;
+      }
+
+      payState.planCode = p.code;
+      payState.planLabel = p.label;
+      payState.amount = p.amount;
+      payState.mpLink = p.mpLink;
+      payState.clickedPay = false;
+      savePayState(payState);
+
+      amount && (amount.textContent = `$${p.amount.toLocaleString("es-CO")}`);
+      if (payBtn) {
+        const has = !!p.mpLink;
+        payBtn.classList.toggle("disabled", !has);
+        payBtn.href = has ? p.mpLink : "#";
+      }
+    }
+
+    // Estado inicial
+    if (amount) amount.textContent = `$${Number(payState.amount || 0).toLocaleString("es-CO")}`;
+    if (payBtn) payBtn.href = payState.mpLink || "#";
+
+    planSel?.addEventListener("change", () => setPlan(String(planSel.value || "")));
+
+    payBtn?.addEventListener("click", () => {
+      if (!payState.planCode) {
+        toast("Selecciona un plan primero.", "warning");
+        return;
+      }
+      if (!payState.mpLink) {
+        toast("Este plan no tiene link de pago configurado.", "warning");
+        return;
+      }
+      payState.clickedPay = true;
+      savePayState(payState);
+    });
+
+    // Toggle body/mini
+    const payBody = formEl.querySelector("#fvPayBody");
+    const payMini = formEl.querySelector("#fvPayMini");
+    const toggleBtn = formEl.querySelector("#fvPayToggle");
+    const toggleMiniBtn = formEl.querySelector("#fvPayToggleMini");
+
+    function setPayCollapsed(collapsed) {
+      if (!payBody) return;
+
+      payBody.classList.toggle("d-none", collapsed);
+
+      // si existe mini-bar, se muestra solo cuando está colapsado
+      if (payMini) payMini.classList.toggle("d-none", !collapsed);
+
+      // Actualiza botón principal (si existe)
+      if (toggleBtn) {
+        toggleBtn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+
+        const icon = toggleBtn.querySelector("i");
+        if (icon) {
+          icon.classList.toggle("fa-chevron-down", collapsed);
+          icon.classList.toggle("fa-chevron-up", !collapsed);
+        }
+
+        // texto del botón (sin romper el icono)
+        toggleBtn.lastChild.textContent = collapsed ? " Ver pago" : " Ocultar";
+      }
+
+      // Actualiza botón mini (si existe)
+      if (toggleMiniBtn) {
+        const icon2 = toggleMiniBtn.querySelector("i");
+        if (icon2) {
+          icon2.classList.toggle("fa-chevron-down", collapsed);
+          icon2.classList.toggle("fa-chevron-up", !collapsed);
+        }
+        toggleMiniBtn.lastChild.textContent = collapsed ? " Ver" : " Ocultar";
+      }
+    }
+
+    // estado inicial: colapsa si ya hay comprobante (como tu render lo define)
+    setPayCollapsed(!!payState?.proof?.url);
+
+    // clicks
+    toggleBtn?.addEventListener("click", () => {
+      // si está colapsado => expandir; si está expandido => colapsar
+      const collapsed = payBody?.classList.contains("d-none");
+      setPayCollapsed(!collapsed ? true : false);
+    });
+
+    toggleMiniBtn?.addEventListener("click", () => {
+      setPayCollapsed(false);
+    });
+
+    resetBtn?.addEventListener("click", () => {
+      // reinicia flujo del mismo evento
+      payState = freshPayState(activeForm?.id || "");
+      savePayState(payState);
+      renderForm(activeForm);
+    });
+
+    upBtn?.addEventListener("click", async () => {
+      if (payState.unlocked) return;
+
+      if (!payState.planCode) return toast("Selecciona un plan.", "warning");
+      if (!payState.mpLink) return toast("Falta configurar el link de pago de este plan.", "warning");
+
+      // Recomendado: exigir que haya abierto el link (mínimo control)
+      if (!payState.clickedPay) {
+        toast("Primero haz clic en “Ir a pagar”, luego vuelve y sube el comprobante.", "warning");
+        return;
+      }
+
+      const file = proofIn?.files?.[0] || null;
+      if (!file) return toast("Adjunta tu comprobante (imagen o PDF).", "warning");
+
+      const max = 8 * 1024 * 1024;
+      if (file.size > max) return toast("El archivo supera 8MB.", "warning");
+
+      const isImg = String(file.type || "").startsWith("image/");
+      const isPdf = file.type === "application/pdf";
+      if (!isImg && !isPdf) return toast("Formato no válido. Usa imagen o PDF.", "warning");
+
+      try {
+        upBtn.setAttribute("disabled", "disabled");
+        upBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Subiendo...';
+
+        const ext = (file.name.split(".").pop() || (isImg ? "jpg" : "pdf")).toLowerCase().slice(0, 6);
+        const year = new Date().getFullYear();
+        const formId = String(activeForm?.id || payState.formId || "form");
+        const storagePath = `comprobantes/${year}/${formId}/${payState.payId}.${ext}`;
+        const r = sRef(storage, storagePath);
+
+        await uploadBytes(r, file, { contentType: file.type || "" });
+        const url = await getDownloadURL(r);
+
+        payState.formId = formId;
+        payState.proof = {
+          url,
+          storagePath,
+          fileName: String(file.name || "").slice(0, 120),
+          uploadedAt: Date.now()
+        };
+        payState.unlocked = true;
+        savePayState(payState);
+
+        // Habilita preguntas
+        formEl.querySelector("#fvQuestionsWrap")?.classList.remove("d-none");
+        updatePagerUI();
+        toast("Comprobante cargado. Ya puedes continuar.", "success");
+
+        // re-render para que el badge cambie a "habilitado"
+        renderForm(activeForm);
+      } catch (e) {
+        console.error(e);
+        toast("No se pudo subir el comprobante.", "danger");
+        upBtn.removeAttribute("disabled");
+        upBtn.innerHTML = '<i class="fas fa-upload me-2"></i> Subir comprobante y continuar';
+      }
+    });
+  }
+
+
 
   function chunkArray(arr, size) {
     const s = Math.max(1, Number(size) || 6);
@@ -521,6 +872,19 @@ if (!ok) {
         page: window.location.pathname,
         ua: navigator.userAgent.slice(0, 180),
       },
+  
+      payment: {
+        payId: payState.payId,
+        planCode: payState.planCode,
+        planLabel: payState.planLabel,
+        amount: payState.amount,
+        mpLink: payState.mpLink,
+        proofUrl: payState.proof.url,
+        proofStoragePath: payState.proof.storagePath,
+        proofFileName: payState.proof.fileName,
+        proofUploadedAt: payState.proof.uploadedAt,
+        verification: "pending"
+      }
     };
 
     const btn = formEl.querySelector('button[type="submit"]');
@@ -534,6 +898,7 @@ if (!ok) {
       await addDoc(collection(db, "formSubmissions"), payload);
       localStorage.setItem(LS_KEY, String(Date.now()));
       formEl.reset();
+      clearPayState();
       
       // Feedback visual más claro
       formEl.innerHTML = `

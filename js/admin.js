@@ -1562,6 +1562,29 @@ function bindSubRow(id) {
     $("#smDate").textContent = fmtDate(it.createdAt) || "—";
     $("#smStatus").textContent = it.status || "—";
 
+    // Pago (si viene desde la inscripción pública con comprobante)
+    const pay = it.payment || null;
+    const smPay = $("#smPayment");
+    if (smPay) {
+      if (!pay) {
+        smPay.innerHTML = "";
+      } else {
+        const plan = cleanText(pay.planLabel || pay.planCode || "—", { max: 120, allowNewlines: false });
+        const amount = Number(pay.amount || 0);
+        const verif = cleanText(pay.verification || "pending", { max: 40, allowNewlines: false });
+        const proofUrl = String(pay.proofUrl || "").trim();
+        const proofLink = proofUrl ? `<a href="${proofUrl}" target="_blank" rel="noopener">Ver comprobante</a>` : "—";
+        smPay.innerHTML = `
+          <div class="p-2 rounded-3 bg-light border">
+            <div><b>Pago:</b> ${plan} • <b>Total:</b> $${amount.toLocaleString("es-CO")}</div>
+            <div><b>Verificación:</b> ${verif} • ${proofLink}</div>
+          </div>
+        `;
+      }
+    }
+
+
+
     
 const answers = it.answers || {};
 

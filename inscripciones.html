@@ -210,6 +210,102 @@
       background: rgba(220, 53, 69, 0.04) !important;
     }
 
+    /* --- Estilos para el Bloque de Pago e Inscripción --- */
+
+    /* 1. Tarjeta Principal (Contenedor) */
+    .border.rounded-4.shadow-sm {
+      border-color: #f0f2f5 !important;
+      box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08) !important; /* Sombra suave y moderna */
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    /* 2. Encabezado del Card */
+    /* Refuerza el diseño del header para que coincida con el borde redondeado */
+    .border.rounded-4 > div:first-child {
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    /* 3. Input de Archivo (Estilo "Dropzone") */
+    #fvPayProof {
+      padding: 0.75rem;
+      background-color: #f8f9fa;
+      border: 2px dashed #dee2e6; /* Borde punteado */
+      border-radius: 0.5rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    #fvPayProof:hover, #fvPayProof:focus {
+      background-color: #fff;
+      border-color: var(--color-principal, #0d6efd); /* Se ilumina al pasar el mouse */
+      box-shadow: 0 4px 10px rgba(13, 110, 253, 0.1);
+    }
+
+    /* 4. Botón de Mercado Pago */
+    #fvPayBtn {
+      background: linear-gradient(45deg, #009ee3, #0073a8); /* Azul oficial de MP */
+      border: none;
+      font-weight: 500;
+      box-shadow: 0 4px 15px rgba(0, 158, 227, 0.3);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    #fvPayBtn:hover:not(.disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 158, 227, 0.4);
+    }
+
+    /* 5. Precio Grande */
+    #fvPayAmount {
+      color: #212529;
+      letter-spacing: -0.5px;
+    }
+
+    /* 6. Mini Bar (Barra colapsada de éxito) */
+    #fvPayMini {
+      background-color: #f0fff4 !important; /* Verde menta muy suave */
+      border: 1px solid #d1e7dd !important;
+      box-shadow: 0 4px 12px rgba(25, 135, 84, 0.1) !important;
+      animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    #fvPayMini i.text-success {
+      color: #198754 !important;
+    }
+
+    /* Animación de entrada para el mini bar */
+    @keyframes slideUpFade {
+      from { 
+        opacity: 0; 
+        transform: translateY(10px) scale(0.98); 
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+      }
+    }
+
+    /* 7. Badges y Textos */
+    .badge.text-bg-success {
+      background-color: #d1e7dd !important;
+      color: #0f5132 !important; /* Texto verde oscuro sobre fondo claro */
+      border: 1px solid #badbcc;
+    }
+
+    .badge.text-bg-secondary {
+      background-color: #e9ecef !important;
+      color: #495057 !important;
+      border: 1px solid #dee2e6;
+    }
+
+    .form-label {
+      font-weight: 600;
+      font-size: 0.85rem;
+      color: #6c757d;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
   </style>
 </head>
 
